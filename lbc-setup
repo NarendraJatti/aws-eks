@@ -1,0 +1,108 @@
+~ $ history
+    1  curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/aws-auth-cm.yaml
+    2  vi aws-auth-cm.yaml
+    3  kubectl apply -f aws-auth-cm.yaml
+    4  kubectl get node -o wide
+    5  vi aws-auth-cm.yaml
+    6  kubectl apply -f aws-auth-cm.yaml
+    7  kubectl get node -o wide
+    8  k get all -n kube-system
+    9  kubectl get all -n kube-system
+   10  helm repo add eks https://aws.github.io/eks-charts
+   11  curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+   12  helm version
+   13  helm repo add eks https://aws.github.io/eks-charts
+   14  wget https://raw.githubusercontent.com/aws/eks-charts/master/stable/aws-load-balancer-controller/crds/crds.yaml
+   15  kubectl apply -f crds.yaml
+   16  ls
+   17  aws s3 cp s3://test1naren/v2_7_2_full.yaml
+   18  aws s3 cp s3://test1naren/v2_7_2_full.yaml .
+   19  kubectl create -f v2_7_2_full.yaml
+   20  helm repo add jetstack https://charts.jetstack.io
+   21  helm repo update
+   22  kubectl create namespace cert-manager
+   23  helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v1.11.0 --set installCRDs=true
+   24  kubectl get pods -n kube-system -l app=aws-load-balancer-controller
+   25  kubectl get pods --all-namespaces -l app=aws-load-balancer-controller
+   26  helm repo add eks https://aws.github.io/eks-charts
+   27  helm repo update
+   28  helm upgrade --install aws-load-balancer-controller eks/aws-load-balancer-controller   --namespace kube-system   --set clusterName=<your-cluster-name>   --set serviceAccount.create=false   --set serviceAccount.name=aws-load-balancer-controller   --set region=<your-region>   --set vpcId=<your-vpc-id>
+   29  kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
+   30  kubectl describe po kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
+   31  kubectl describe po aws-load-balancer-controller-65955898b5-4ls6d -n kube-system
+   32  ~ $ kubectl describe po aws-load-balancer-controller-65955898b5-4ls6d -n kube-system
+   33  Name:                 aws-load-balancer-controller-65955898b5-4ls6d
+   34  Namespace:            kube-system
+   35  Priority:             2000000000
+   36  Priority Class Name:  system-cluster-critical
+   37  Service Account:      aws-load-balancer-controller
+   38  Node:                 ip-172-31-1-241.ec2.internal/172.31.1.241
+   39  Start Time:           Mon, 03 Feb 2025 13:47:57 +0000
+   40  Labels:               app.kubernetes.io/component=controller
+   41                        app.kubernetes.io/name=aws-load-balancer-controller
+   42                        pod-template-hash=65955898b5
+   43  Annotations:          <none>
+   44  Status:               Pending
+   45  IP:                   
+   46  IPs:                  <none>
+   47  Controlled By:        ReplicaSet/aws-load-balancer-controller-65955898b5
+   48  Containers:
+   49    controller:
+   50      Container ID:  
+   51      Image:         public.ecr.aws/eks/aws-load-balancer-controller:v2.7.2
+   52      Image ID:      
+   53      Port:          9443/TCP
+   54      Host Port:     0/TCP
+   55      Args:
+   56        --cluster-name=demo-eks
+   57        --ingress-class=alb
+   58      State:          Waiting
+   59        Reason:       ContainerCreating
+   60      Ready:          False
+   61      Restart Count:  0
+   62      Limits:
+   63        cpu:     200m
+   64        memory:  500Mi
+   65      Requests:
+   66        cpu:        100m
+   67        memory:     200Mi
+   68      Liveness:     http-get http://:61779/healthz delay=30s timeout=10s period=10s #success=1 #failure=2
+   69      Environment:  <none>
+   70      Mounts:
+   71        /tmp/k8s-webhook-server/serving-certs from cert (ro)
+   72        /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-zvmqs (ro)
+   73  Conditions:
+   74    Type                        Status
+   75    PodReadyToStartContainers   False 
+   76    Initialized                 True 
+   77    Ready                       False 
+   78    ContainersReady             False 
+   79    PodScheduled                True 
+   80  Volumes:
+   81    cert:
+   82      Type:        Secret (a volume populated by a Secret)
+   83      SecretName:  aws-load-balancer-webhook-tls
+   84      Optional:    false
+   85    kube-api-access-zvmqs:
+   86      Type:                    Projected (a volume that contains injected data from multiple sources)
+   87      TokenExpirationSeconds:  3607
+   88      ConfigMapName:           kube-root-ca.crt
+   89      ConfigMapOptional:       <nil>
+   90      DownwardAPI:             true
+   91  QoS Class:                   Burstable
+   92  Node-Selectors:              <none>
+   93  Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+   94                               node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+   95  Events:
+   96    Type     Reason       Age                  From               Message
+   97    ----     ------       ----                 ----               -------
+   98    Normal   Scheduled    4m17s                default-scheduler  Successfully assigned kube-system/aws-load-balancer-controller-65955898b5-4ls6d to ip-172-31-1-241.ec2.internal
+   99    Warning  FailedMount  7s (x10 over 4m17s)  kubelet            MountVolume.SetUp failed for volume "cert" : secret "aws-load-balancer-webhook-tls" not found
+  100  kubectl create secret tls aws-load-balancer-webhook-tls   --cert=tls.crt   --key=tls.key   -n kube-system
+  101  openssl req -x509 -newkey rsa:2048 -keyout tls.key -out tls.crt -days 365 -nodes -subj "/CN=aws-load-balancer-webhook.kube-system.svc"
+  102  kubectl create secret tls aws-load-balancer-webhook-tls   --cert=tls.crt   --key=tls.key   -n kube-system
+  103  kubectl get secret aws-load-balancer-webhook-tls -n kube-system
+  104  kubectl delete pod -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
+  105  kubectl get pods -n kube-system -l app=aws-load-balancer-controller
+  106  kubectl get pods -n kube-system -l app.kubernetes.io/name=aws-load-balancer-controller
+  107  history

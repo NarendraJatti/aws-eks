@@ -1,0 +1,216 @@
+https://github.com/kodekloudhub/amazon-elastic-kubernetes-service-course/blob/main/docs/deploy.md
+https://github.com/kodekloudhub/amazon-elastic-kubernetes-service-course/blob/main/docs/nodes.md
+
+
+latest>>https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/managed-clusters/eks/console/docs/01-sign-in.md
+describe short ds
+
+kubectl apply --validate=false -f https://github.com/cert-manager/cert-manager/releases/download/v1.11.0/cert-manager.yaml
+
+
+https://github.com/aws-ia/terraform-aws-eks-blueprints
+
+kubectl get deployment -n kube-system aws-load-balancer-controller
+
+links
+=======
+roles>https://www.youtube.com/watch?v=6COvT1Zu9o0
+cicd>https://www.youtube.com/watch?v=tkYzg8HRK4o
+
+tools for eks
+==============
+1)eksctl(CloudFormation stack)
+2)eks demo(wrapper on eksctl),https://github.com/awslabs/eksdemo
+3)aws iam authenticator for k8,https://github.com/kubernetes-sigs/aws-iam-authenticator
+
+kubectl config current-context
+kubectl config get-contexts
+
+kubectl get roles,rolebindings --all-namespaces
+kubectl get clusterroles,clusterrolebindings
+
+
+aws sts get-caller-identity
+
+aws iam simulate-principal-policy --policy-source-arn arn:aws:iam::533267440735:user/demo-user --action-names eks:DescribeCluster --region us-east-1
+
+kubectl create role naren-no-pod-create \
+  --verb=list,get,delete \
+  --resource=pods \
+  --namespace=default
+
+kubectl create rolebinding naren-no-pod-create-binding \
+  --role=naren-no-pod-create \
+  --user=naren \
+  --namespace=default
+
+kubectl create clusterrolebinding naren-no-pod-create-binding \
+  --clusterrole=naren-no-pod-create \
+  --user=naren
+
+
+kubectl auth can-i create pods --as=naren
+
+kubectl run nginx --image=nginx --as=naren
+
+
+
+kubectl run nginx-pod --image=nginx --port=80
+
+
+$ history
+    ls
+    terraform_version=$(curl -s https://checkpoint-api.hashicorp.com/v1/check/terraform | jq -r -M '.current_version')
+    curl -O "https://releases.hashicorp.com/terraform/${terraform_version}/terraform_${terraform_version}_linux_amd64.zip"
+    unzip terraform_${terraform_version}_linux_amd64.zip
+    mkdir -p ~/bin
+    mv terraform ~/bin/
+    terraform version
+    git clone https://github.com/kodekloudhub/amazon-elastic-kubernetes-service-course
+    
+   cd amazon-elastic-kubernetes-service-course/eks
+   
+   .\check-environment.ps1
+   source check-environment.sh
+   terraform init
+   terraform plan
+   terraform apply
+   curl http://localhost:8080
+   kubectl describe svc nginx-pod
+   
+eks $ 
+
+
+kubectl port-forward pod/nginx-pod 8080:80
+Forwarding from 127.0.0.1:8080 -> 80
+Forwarding from [::1]:8080 -> 80
+Handling connection for 8080
+^C~ $ kubectl port-forward pod/nginx-pod 8080:80
+Forwarding from 127.0.0.1:8080 -> 80
+Forwarding from [::1]:8080 -> 80
+Handling connection for 8080
+^C~ $ history
+    1  ls
+    2  aws eks update-kubeconfig --region us-east-1 --name demo-eks
+    3  cd /home/cloudshell-user/.kube/
+    4  ls
+    5  cat config 
+    6  kubectl get contexts
+    7  kubectl get context
+    8  kubectl get nodes
+    9  kubectl config current-context
+   10  kubectl config get-contexts
+   11  cd
+   12  curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/aws-auth-cm.yaml
+   13  vi aws-auth-cm.yaml
+   14  k get nodes
+   15  kubectl get nodes
+   16  kubectl apply -f aws-auth-cm.yaml
+   17  kubectl get nodes
+   18  kubectl get po
+   19  vim nginx-pod.yaml
+   20  kubectl apply -f nginx-pod.yaml
+   21  vim nginx-pod.yaml
+   22  kubectl run nginx-pod --image=nginx --port=80
+   23  alias k = kubectl
+   24  k get po
+   25  kubectl get po
+   26  kubectl expose pod nginx-pod --type=LoadBalancer --port=80 --target-port=80
+   27  kubectl get svc nginx-pod
+   28  curl http://a371149ee0b974863a0707f468acbca8-43760578.us-east-1.elb.amazonaws.com
+   29  kubectl get svc nginx-pod
+   30  curl http://a371149ee0b974863a0707f468acbca8-43760578.us-east-1.elb.amazonaws.com
+   31  kubectl describe pod nginx-pod
+   32  kubectl port-forward pod/nginx-pod 8080:80
+   33  history
+~ $ 
+
+
+
+
+
+
+
+==============================
+
+
+
+amazon-elastic-kubernetes-service-course  bin  LICENSE.txt  terraform_1.10.5_linux_amd64.zip
+~ $ aws eks update-kubeconfig --region us-east-1 --name demo-eks
+Added new context arn:aws:eks:us-east-1:533267440735:cluster/demo-eks to /home/cloudshell-user/.kube/config
+~ $ cd /home/cloudshell-user/.kube/
+.kube $ ls
+config
+.kube $ cat config 
+apiVersion: v1
+clusters:
+- cluster:
+    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJUThzSWNIaVFOV013RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TlRBeE1qWXhNek00TUROYUZ3MHpOVEF4TWpReE16UXpNRE5hTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUURRaHVLdFdGY1NhUkJ4VGxnem9YVklmdWlabnA4ZVFZOXE0MEtvOGNEWGQxYmFmTk1OeXduZ2JFUUQKYm1LT2NuWXEzTnNabk1QYVcwa3dqL0had0xjTHdpRzZPRkpCU3JnbjF0eFRaV3JDRzVqRXF6dFVyQ3dqemdHYQpkSVcyVjl4c0hWMytnUzA1Q2tMa1N2MXRlalo0OWJzV2tBTEJvSHZYdlZreWQ5Umx1cDlrMGZDWXNtZmN2aGpaCnJ1L2F4NHBNL3Q4R3pBUFFndkpJOTUzZldFMFZnVXNxUnhzZFVIS1RkakhNTDF2dm16eHVrOG4yODVBYkp1dVIKZVFqMkgxTmdDRDJiYXM2UzBQelNPVEhxWklEZHBaZ0FDK3B4WXVKeEZaci9pZGtaczliTWkxV050ZTQxVkJaNApFUDhGLzNmY3o5RGdBd2dlWlV3STNUNlF3cnJ6QWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJRT3JsSndjSG9JYnYzN05xNEZnQWpaZ25tM3pEQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQzd2cVpHU0dQdApJUlFack1USnp5ZU0yNWxEaXp6MkdmSjF3YkhIdVVBZzFsNG1LVGIwUTYvQUlRYldRbDZCeDYwTXBBUXRDMWN5Ckwvc0VWQTU2c1JGenR6MVNBMXJnekgxOFBSOXJrZFJOMW5rSEt4dWcrV3E3OS9FRlloc3BiTVBXNnVacUJxNXkKOXBOZGdmRThUajhTUEpaaHFVQThLdkFUTFNRNDhITjNvUnVYK01OL1FjblJRekdmMllKZ09keHhXSVlyd0kwTApXY2w5T1JaakRNUUJ1THYyUjQ0bVl2NGhCSmtKZWRMMVkxanQzT3JRZDU1T2pkRjJlRVAydFZtcUk4K3VoM1ZCCmhXZHVhTm1NVnIzZkZyTFBFb1hlNFNPWGtLQmk5NktZT0lBZmJLOWFncHYwNnpvNXNWam1CVXdlTDM3d1A4ZjEKdG1rU1BlZmtuckk5Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+    server: https://8881704DFCCBF69F0C39E76C4D074CB4.gr7.us-east-1.eks.amazonaws.com
+  name: arn:aws:eks:us-east-1:533267440735:cluster/demo-eks
+contexts:
+- context:
+    cluster: arn:aws:eks:us-east-1:533267440735:cluster/demo-eks
+    user: arn:aws:eks:us-east-1:533267440735:cluster/demo-eks
+  name: arn:aws:eks:us-east-1:533267440735:cluster/demo-eks
+current-context: arn:aws:eks:us-east-1:533267440735:cluster/demo-eks
+kind: Config
+preferences: {}
+users:
+- name: arn:aws:eks:us-east-1:533267440735:cluster/demo-eks
+  user:
+    exec:
+      apiVersion: client.authentication.k8s.io/v1beta1
+      args:
+      - --region
+      - us-east-1
+      - eks
+      - get-token
+      - --cluster-name
+      - demo-eks
+      - --output
+      - json
+      command: aws
+.kube $ 
+
+
+In Amazon EKS, by default, each pod gets its own IP address from the VPC subnet. If you have many pods, especially in larger clusters, this can quickly consume a lot of IP addresses. To avoid consuming too many IPs and manage your resources more efficiently, you can use Amazon VPC CNI (Container Network Interface) Plugin for Kubernetes with the following strategies:
+You can also control how many pods can run on each node by setting the max-pods parameter in the Node Instance Configuration.
+eksctl create nodegroup --max-pods=110
+
+
+eksdemo get vpc
+eksdemo get subnets
+eksdemo get Network-Interface
+
+Configuring Warm IP Target
+You can configure the warm IP target by editing the Amazon VPC CNI plugin configuration.
+In AWS EKS (Elastic Kubernetes Service), a warm IP target is related to how ENIs (Elastic Network Interfaces) and IP addresses are pre-allocated for pods running on EC2 instances (worker nodes). This concept is tied to how the Amazon VPC CNI plugin manages networking for pods and optimizes the assignment of IP addresses to minimize delays when new pods are scheduled.
+kubectl edit daemonset aws-node -n kube-system
+You can configure the warm IP target by editing the aws-node DaemonSet and setting the WARM_IP_TARGET environment variable.
+
+
+kubectl config view --minify
+kubectl get configmap aws-auth -n kube-system -o yaml
+
+
+docker push 590184029746.dkr.ecr.us-east-1.amazonaws.com/rekhugopal/eksistiodemo:latest
+
+aws ec2 describe-subnets --query "Subnets[*].{SubnetId:SubnetId, Tags:Tags}" | jq
+
+LB controller
+===============
+apiVersion: apps/v1
+kind: Deployment
+...
+name: aws-load-balancer-controller
+namespace: kube-system
+spec:
+    ...
+    template:
+        spec:
+            containers:
+                - args:
+                    - --cluster-name=demo-eks ## Update this to demo-eks
+
+  kubectl version --short
