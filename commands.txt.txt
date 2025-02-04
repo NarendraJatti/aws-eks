@@ -1,0 +1,64 @@
+
+kubectl create role view-only-role --verb=get,list,watch --resource=pods --namespace=default
+
+kubectl create rolebinding naren-view-binding --role=view-only-role --user=naren --namespace=default
+kubectl config view
+kubectl auth can-i --as=naren get pods --namespace=default
+kubectl config use-context naren
+
+
+##You can run the showcreds command anytime to retrieve these credentials.
+
+~ $ history
+    1  ls
+    2  aws eks update-kubeconfig --region us-east-1 --name demo-eks
+    3  cd /home/cloudshell-user/.kube/
+    4  ls
+    5  cat config 
+    6  kubectl get contexts
+    7  kubectl get context
+    8  kubectl get nodes
+    9  kubectl config current-context
+   10  kubectl config get-contexts
+   11  cd
+   12  curl -O https://s3.us-west-2.amazonaws.com/amazon-eks/cloudformation/2020-10-29/aws-auth-cm.yaml
+   13  vi aws-auth-cm.yaml
+   14  k get nodes
+   15  kubectl get nodes
+   16  kubectl apply -f aws-auth-cm.yaml
+   17  kubectl get nodes
+   18  kubectl get po
+   19  vim nginx-pod.yaml
+   20  kubectl apply -f nginx-pod.yaml
+   21  vim nginx-pod.yaml
+   22  kubectl run nginx-pod --image=nginx --port=80
+   23  alias k = kubectl
+   24  k get po
+   25  kubectl get po
+   26  kubectl expose pod nginx-pod --type=LoadBalancer --port=80 --target-port=80
+   27  kubectl get svc nginx-pod
+   28  curl http://a371149ee0b974863a0707f468acbca8-43760578.us-east-1.elb.amazonaws.com
+   29  kubectl get svc nginx-pod
+   30  curl http://a371149ee0b974863a0707f468acbca8-43760578.us-east-1.elb.amazonaws.com
+   31  kubectl describe pod nginx-pod
+   32  kubectl port-forward pod/nginx-pod 8080:80
+   33  history
+   34  kubectl config current-context
+kubectl config view --minify
+
+   35  aws sts get-caller-identity
+   36  aws eks list-clusters --region us-east-1
+   37  aws iam list-attached-role-policies --role-name demo-role
+   38  kubectl get roles,rolebindings --all-namespaces
+   39  kubectl get clusterroles,clusterrolebindings
+   40  kubectl auth can-i create pods
+   41  vim role-no-pod-create.yaml
+   42  kubectl create role naren-no-pod-create   --verb=list,get,delete   --resource=pods   --namespace=default
+   43  kubectl create rolebinding naren-no-pod-create-binding   --role=naren-no-pod-create   --user=naren   --namespace=default
+   44  kubectl auth can-i create pods --as=naren
+   45  kubectl run nginx --image=nginx --as=naren
+   46  aws sts assume-role --role-arn arn:aws:iam::533267440735:role/naren --role-session-name naren-session
+   47  aws eks update-kubeconfig --region us-east-1 --name demo-eks
+   48  cat /home/cloudshell-user/.kube/config
+   49  kubectl config current-context
+   50  history
