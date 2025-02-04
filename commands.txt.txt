@@ -1,4 +1,4 @@
-
+#commands to rember
 kubectl create role view-only-role --verb=get,list,watch --resource=pods --namespace=default
 
 kubectl create rolebinding naren-view-binding --role=view-only-role --user=naren --namespace=default
