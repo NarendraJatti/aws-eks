@@ -214,3 +214,9 @@ spec:
                     - --cluster-name=demo-eks ## Update this to demo-eks
 
   kubectl version --short
+
+
+curl http://k8s-default-webappco-a7bb02d6e0-21480f425939c60a.elb.us-east-1.amazonaws.com
+
+
+https://www.youtube.com/watch?v=5XpPiORNy1o&list=PLmPL-f-MSjiIJZZVffcFGRvCtvYHOl92c&index=7

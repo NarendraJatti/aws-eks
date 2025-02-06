@@ -1,0 +1,26 @@
+kubectl get ingress ingress-sample -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'
+
+sudo nano /etc/hosts
+
+ALB_HOSTNAME sampleapp.local
+
+abc123456.us-east-1.elb.amazonaws.com sampleapp.local
+
+
+Automatic Security Group Assignment:
+If you create an ALB through Kubernetes Ingress or Service annotations using the Load Balancer Controller, AWS will automatically create a security group for the ALB and associate it with the worker nodes in the EKS cluster. This security group allows inbound traffic on the specified ports (e.g., port 80 or 443 for HTTP/HTTPS) based on your app's requirements defined in the Kubernetes Service or Ingress configuration.
+
+Example annotations in an Ingress resource:
+
+yaml
+Copy
+Edit
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-app-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/target-type: ip
+In this case, the Load Balancer Controller will create security groups allowing inbound traffic on ports 80 and 443 automatically.
