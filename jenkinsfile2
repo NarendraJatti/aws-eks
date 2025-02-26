@@ -1,0 +1,23 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Update kubeconfig and Create Pod') {
+            steps {
+                script {
+                    sh 'aws eks update-kubeconfig --region us-east-1 --name demo-eks'
+                    sh 'kubectl get ns'
+
+                    // Create the pod using nginx image with no restart policy (just a pod)
+                    sh 'kubectl run test --image=nginx --restart=Never'
+
+                    // Wait for the pod to be in Running state
+                    sh 'kubectl wait --for=condition=Ready pod/test --timeout=60s'
+
+                    // Verify that the pod is running
+                    sh 'kubectl get pods'
+                }
+            }
+        }
+    }
+}

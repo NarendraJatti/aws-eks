@@ -1,0 +1,42 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_REGION = 'your-aws-region'
+        EKS_CLUSTER_NAME = 'your-eks-cluster-name'
+    }
+
+    stages {
+        stage('Update kubeconfig') {
+            steps {
+                script {
+                    // Assuming you have the AWS CLI and kubectl installed on your Jenkins agent
+                    sh '''
+                    # Update kubeconfig for EKS
+                    aws eks update-kubeconfig --region ${AWS_REGION} --name ${EKS_CLUSTER_NAME}
+                    '''
+                }
+            }
+        }
+
+        stage('Get Namespaces') {
+            steps {
+                script {
+                    // Get Kubernetes namespaces
+                    sh '''
+                    kubectl get ns
+                    '''
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                // Optional cleanup or notification logic
+                echo 'Pipeline completed'
+            }
+        }
+    }
+}

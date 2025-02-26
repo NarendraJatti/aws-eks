@@ -1,5 +1,9 @@
 https://github.com/kodekloudhub/amazon-elastic-kubernetes-service-course/blob/main/docs/deploy.md
 https://github.com/kodekloudhub/amazon-elastic-kubernetes-service-course/blob/main/docs/nodes.md
+https://github.com/kodekloudhub/jenkins-project/blob/main/eksClusterCreation.md
+
+
+showcreds
 
 
 latest>>https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/managed-clusters/eks/console/docs/01-sign-in.md
@@ -11,6 +15,48 @@ kubectl apply --validate=false -f https://github.com/cert-manager/cert-manager/r
 https://github.com/aws-ia/terraform-aws-eks-blueprints
 
 kubectl get deployment -n kube-system aws-load-balancer-controller
+
+aws eks describe-cluster --region us-east-1 --name demo-eks --query cluster.status 
+
+jenkins(ec2) with eks>>https://www.youtube.com/watch?v=eKiA6pRg0Qc >>important
+Running on Jenkins in /var/lib/jenkins/workspace/eks-push: This means that Jenkins is executing the pipeline within the directory /var/lib/jenkins/workspace/eks-push, which is the working directory for the job named eks-push. This is where Jenkins stores files related to the job execution, including the scripts it runs, logs, and any files that may be generated during the pipeline execution.
+
+enkins jobs are often executed as the jenkins user: When Jenkins runs the pipeline, it typically does so as the jenkins user on the system. Therefore, any AWS configuration needs to be accessible to this user. The home directory for the jenkins user on most systems is /var/lib/jenkins.
+
+Why /var/lib/jenkins: When you run aws configure or use the AWS CLI, the credentials are stored in ~/.aws/credentials and ~/.aws/config within the home directory of the user running the command. In Jenkins, this path is typically /var/lib/jenkins/.aws/. So, if you run aws eks update-kubeconfig, Jenkins needs access to the AWS credentials and configuration in this path.
+
+When to Provide a kubeconfig File as a Secret in Jenkins:
+There are situations where you might prefer or need to provide a kubeconfig file as a secret in Jenkins:
+
+Jenkins Agent/Server Does Not Have AWS Access:
+
+If Jenkins does not have the AWS CLI configured (i.e., no aws configure or no role permissions to interact with EKS), you may need to manually provide the kubeconfig file as a secret. This kubeconfig would allow Jenkins to access the Kubernetes cluster without relying on the aws eks update-kubeconfig command.
+Security Constraints:
+
+If your organization does not allow direct access to AWS from Jenkins for security reasons, you may need to store the kubeconfig file as a secret in Jenkins (using the Credentials plugin) and inject it into the pipeline during job execution.
+Predefined Kubernetes Clusters:
+
+If you're dealing with clusters that are not managed by AWS EKS or if the kubeconfig is static and predefined, you can store the kubeconfig file securely in Jenkins as a secret text credential.
+Avoiding Frequent kubeconfig Updates:
+
+In some cases, especially with immutable environments, you might not want to run aws eks update-kubeconfig every time your pipeline runs. Instead, you might create the kubeconfig file once, store it as a secret, and reuse it.
+
+Why Your aws configure Worked:
+In your case, the aws eks update-kubeconfig command worked fine because:
+
+Jenkins had access to AWS credentials (either via aws configure or an IAM role attached to the Jenkins node).
+The aws eks update-kubeconfig command generates the kubeconfig dynamically, making it easier and more flexible than managing kubeconfig files manually.
+If Jenkins has appropriate AWS permissions, this method is generally preferred because it:
+
+Automatically manages the kubeconfig.
+Reflects the current state of the EKS cluster.
+Avoids the need to handle sensitive kubeconfig files directly in Jenkins.
+
+
+Built-In Node
+Mark this node temporarily offline
+This is the Jenkins controller's built-in node. Builds running on this node will execute on the same system and as the same user as the Jenkins controller. This is appropriate e.g. for special jobs performing backups, but in general you should run builds on agents. Learn more about distributed builds.
+
 
 links
 =======
@@ -53,9 +99,42 @@ kubectl auth can-i create pods --as=naren
 
 kubectl run nginx --image=nginx --as=naren
 
+kubectl exec -it <nginx-pod-name> -- curl http://localhost:80
 
+kubectl exec -it nginx-release-nginx-app-77d5bc9947-25lv4 -- curl http://localhost:80
+kubectl run tmp-shell --rm -i --tty --image busybox -- /bin/sh
+wget -qO- http://nginx-release-nginx-app.default.svc.cluster.local:80
+
+kubectl get componentstatuses
+
+kubectl port-forward svc/argocd-server 9000:80 --address 0.0.0.0 -n argocd
+
+argocd with eks
+==============
+argocd cli 
+https://medium.com/@chauhanhimani512/install-argocd-on-the-eks-cluster-and-configure-sync-with-the-github-manifest-repository-9e3d62e1c093
+
+~ $ export ARGOCD_SERVER=`kubectl get svc argocd-server -n argocd -o json | jq --raw-output '.status.loadBalancer.ingress[0].hostname'`
+
+
+
+helm install aws-load-balancer-controller eks/aws-load-balancer-controller \
+  --set clusterName= demo-eks \
+  --set serviceAccount.create=false \
+  --set region=us-east-1 \
+  --set vpcId=vpc-0ae8ac2b4ed41e741 \
+  --set serviceAccount.name=aws-load-balancer-controller \
+  -n kube-system
+
+  important>https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
+
+https://github.com/devops4solutions/kubernetes-code/blob/main/nginx/service_lb.yaml
 
 kubectl run nginx-pod --image=nginx --port=80
+
+helm charts with eks
+=====================
+https://www.youtube.com/watch?v=lLLEmrr9uxQ
 
 
 $ history
@@ -69,8 +148,10 @@ $ history
     git clone https://github.com/kodekloudhub/amazon-elastic-kubernetes-service-course
     
    cd amazon-elastic-kubernetes-service-course/eks
+
+
    
-   .\check-environment.ps1
+   #.\check-environment.ps1
    source check-environment.sh
    terraform init
    terraform plan
@@ -79,6 +160,10 @@ $ history
    kubectl describe svc nginx-pod
    
 eks $ 
+
+important>
+We will use the NGINX Ingress Controller instead of the AWS ALB controller.
+
 
 
 kubectl port-forward pod/nginx-pod 8080:80
@@ -219,4 +304,20 @@ spec:
 curl http://k8s-default-webappco-a7bb02d6e0-21480f425939c60a.elb.us-east-1.amazonaws.com
 
 
+
 https://www.youtube.com/watch?v=5XpPiORNy1o&list=PLmPL-f-MSjiIJZZVffcFGRvCtvYHOl92c&index=7
+
+
+kubectl config view 
+kubectl config current-context 
+kubectl config use-context context-name 
+aws eks update-kubeconfig \
+    --name my-eks-cluster
+
+IRSA 
+========
+IRSA (IAM Roles for Service Accounts) is an AWS feature that allows Kubernetes pods running on Amazon EKS (Elastic Kubernetes Service) to assume IAM roles for accessing AWS resources securely. Instead of giving blanket permissions to all worker nodes in the cluster, IRSA allows you to assign fine-grained AWS IAM permissions to individual pods using Kubernetes service accounts.
+
+
+CCM (Cloud Controller Manager) in Kubernetes is responsible for interacting with the underlying cloud provider's API to manage cloud-specific resources. It allows Kubernetes to integrate with the infrastructure components provided by cloud platforms like AWS, Azure, GCP, etc.
+Yes, the AWS Cloud Controller Manager (CCM) can create Application Load Balancers (ALBs), but it does so via the AWS Load Balancer Controller, which is a more specific implementation for managing ALBs and Network Load Balancers (NLBs).
