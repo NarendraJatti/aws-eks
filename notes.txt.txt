@@ -109,7 +109,7 @@ kubectl get componentstatuses
 
 kubectl port-forward svc/argocd-server 9000:80 --address 0.0.0.0 -n argocd
 
-argocd with eks
+argocd with eks >>
 ==============
 argocd cli 
 https://medium.com/@chauhanhimani512/install-argocd-on-the-eks-cluster-and-configure-sync-with-the-github-manifest-repository-9e3d62e1c093
