@@ -1,0 +1,88 @@
+https://kodekloud.com/community/t/argocd-with-eks-not-able-to-access-the-argo-ui-in-browser/474494/6
+
+https://argoproj.github.io/argo-helm/
+
+my-git-repo/
+│
+├── nginx-chart/
+│   ├── Chart.yaml
+│   ├── values.yaml
+│   └── templates/
+│       ├── deployment.yaml
+│       ├── service.yaml
+│       └── ingress.yaml
+
+
+Under the Source section:
+
+Repo URL: Provide the URL to your Git repository (e.g., https://github.com/your-org/my-git-repo).
+Path: Specify the path to the Helm chart in the Git repo (e.g., nginx-chart).
+Target Revision: Select a specific Git branch (e.g., main or dev) or a commit hash
+
+Sync Policy: Set it to either Manual or Auto:
+
+Manual: ArgoCD will sync the application only when triggered manually.
+Auto: ArgoCD will automatically detect changes in the Git repository and deploy them.
+
+kubectl get pods,svc -n <namespace>
+
+my-git-repo/
+│
+├── staging/
+│   └── nginx-chart/
+│       ├── Chart.yaml
+│       ├── values.yaml
+│       └── templates/
+├── production/
+│   └── nginx-chart/
+│       ├── Chart.yaml
+│       ├── values.yaml
+│       └── templates/
+
+
+
+ helm pull argo-cd/argo-cd --untar
+
+ helm search repo argo-cd
+
+https://charts.bitnami.com/bitnami
+
+https://medium.com/@tech_18484/elevate-your-amazon-eks-cluster-a-spectacular-guide-to-prometheus-and-grafana-monitoring-ee22653ca018
+
+kubectl patch svc argocd-server  -n argocd -p '{"spec": {"type": "NodePort"}}'
+
+
+kubectl patch svc stable-kube-prometheus-sta-prometheus -n prometheus -p '{"spec": {"type": "NodePort"}}'
+
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
+kubectl delete -f image-updater.yaml>>to delete created resources
+
+ k get events -n argocd
+
+ get events -n argocd | grep -i error
+
+ kubectl describe pod argocd-image-updater-6b86848f4f-m9gt5 -n argocd
+
+
+trungtran@Trungs-MacBook-Air ~ % kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+uTr6ewKaycVPA3Jd
+
+You’re absolutely right! In a real-world scenario, relying on a Prometheus server inside the same Kubernetes cluster means losing monitoring if the cluster goes down.
+
+To address this, we only need to install the Node Exporter on the Kubernetes nodes—either as a containerized pod or using systemctl on the host machine. These Node Exporters send metrics to a Prometheus server that can be deployed outside the Kubernetes cluster, ensuring monitoring remains available even if the cluster fails.
+
+For better performance and security, we should set up a private connection between the Node Exporters and the external Prometheus server to reduce latency and improve reliability.
+
+As for Grafana, it can be deployed anywhere, as long as it has access to Prometheus to fetch metrics.
+
+In most learning environments, demos, and small projects, we typically deploy Prometheus inside the Kubernetes cluster for simplicity. However, for production systems, running Prometheus externally or in a highly available setup ensures continuous monitoring even during cluster failures.
+
+argocd image updater 
+============
+argocd admin dashboard
+
+https://medium.com/@megaurav25/argocd-image-updater-fbc93dc15e34
+https://www.youtube.com/watch?v=9zic7kKh_zU&t=22s
+ArgoCD Image Updater is a tool that helps automate the deployment of updated container images in Kubernetes clusters managed by ArgoCD. Instead of manually updating image versions in Kubernetes manifests (such as Helm charts, Kustomize, or plain YAML files), ArgoCD Image Updater automatically detects new container image versions and triggers ArgoCD to deploy these updates.
+

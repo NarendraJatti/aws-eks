@@ -2,6 +2,12 @@ https://spacelift.io/blog/kubernetes-challenges
 
 https://komodor.com/learn/kubernetes-troubleshooting-the-complete-guide/
 
+https://www.redhat.com/en/blog/kubernetes-troubleshooting
+
+https://www.youtube.com/watch?v=Cfznp8jRh7I&t=13s
+
+kubectl describe pod test-secret-pod>> can gives events info at the end
+
 Kubernetes doesn’t have native support for canary deployments out of the box, but it can be achieved with a combination of tools like Istio, Linkerd, or Argo Rollouts.
 
 kubectl describe node>>to see node metrics,disk pressue etc
@@ -50,3 +56,15 @@ If there are no available nodes with sufficient resources, Kubernetes can use pr
 Scaling Up and Down:
 
 As more Pods are created or deleted, the scheduler continues to try and balance the distribution across all available nodes.
+
+
+Common Causes for ContainerCreating Status:
+Pending Resources: There might not be enough resources (CPU, memory, etc.) available on the cluster nodes to schedule the pod.
+
+Image Pull Issues: The container image may not be available, or the image pull secrets might be incorrect.
+
+Persistent Volume Claims (PVCs): If the pod depends on a volume and it's unable to bind to a PersistentVolume (PV), the pod will be stuck in ContainerCreating.
+
+Network Issues: Problems with the network plugin (CNI) can cause delays or failures in networking setup for the pod.
+
+Secrets or ConfigMaps: If your pod is using Kubernetes Secrets or ConfigMaps and there is an issue with accessing those resources, it can cause this status.

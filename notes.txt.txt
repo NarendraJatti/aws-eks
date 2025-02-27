@@ -324,3 +324,14 @@ IRSA (IAM Roles for Service Accounts) is an AWS feature that allows Kubernetes p
 
 CCM (Cloud Controller Manager) in Kubernetes is responsible for interacting with the underlying cloud provider's API to manage cloud-specific resources. It allows Kubernetes to integrate with the infrastructure components provided by cloud platforms like AWS, Azure, GCP, etc.
 Yes, the AWS Cloud Controller Manager (CCM) can create Application Load Balancers (ALBs), but it does so via the AWS Load Balancer Controller, which is a more specific implementation for managing ALBs and Network Load Balancers (NLBs).
+
+
+Determine how many pods you will run on each worker node. EC2 instance types have different limits for the number of pods that can run on them (due to IP address limitations). For example, a t3.small can handle fewer pods compared to an m5.large.
+In AWS EKS (Elastic Kubernetes Service), the instance type you choose for worker nodes and the number of IP addresses available are linked through ENI (Elastic Network Interface) limits and the number of pods that can be scheduled per node.
+Each instance type has a different capacity in terms of the maximum number of ENIs and IP addresses it can handle, which directly impacts the number of Kubernetes pods that can be run on that node. Understanding this relationship helps you make informed decisions on whether to use larger or smaller instance types.
+nstance Type Determines ENI Limits: Each EC2 instance type has a limit on how many ENIs (Elastic Network Interfaces) it can attach. Every ENI provides a certain number of IP addresses, and each pod running on the instance requires an IP address.
+
+ENIs: An ENI is a virtual network interface that can be attached to an EC2 instance, and each ENI has a number of private IP addresses.
+Pod IPs: Each pod in Kubernetes is assigned a unique IP address. In AWS EKS, pods get IP addresses from the ENIs attached to the worker node (EC2 instance).
+Example: A t3.medium instance supports 3 ENIs, and each ENI can have 6 IPs, giving a total of 17 pods (1 IP for the instance itself).
+A larger instance type, such as an m5.4xlarge, supports more ENIs and IPs per ENI, allowing you to run many more pods.
