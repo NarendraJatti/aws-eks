@@ -1,0 +1,52 @@
+https://spacelift.io/blog/kubernetes-challenges
+
+https://komodor.com/learn/kubernetes-troubleshooting-the-complete-guide/
+
+Kubernetes doesn’t have native support for canary deployments out of the box, but it can be achieved with a combination of tools like Istio, Linkerd, or Argo Rollouts.
+
+kubectl describe node>>to see node metrics,disk pressue etc
+
+
+
+===========================
+In Kubernetes (including EKS), the distribution of Pods across worker nodes is managed by the scheduler, which places Pods on nodes based on several factors. By default, Kubernetes tries to achieve a balanced distribution of Pods across the available worker nodes. However, this process is influenced by a few key elements:
+
+Key Factors Affecting Pod Distribution
+Resource Requests and Limits:
+
+When you create a Pod, you can specify resource requests (such as CPU and memory) in your Pod specification.
+Kubernetes attempts to place the Pod on a node that has sufficient available resources to meet the Pod’s requests.
+Nodes with more available resources (relative to what’s requested) are more likely to receive new Pods.
+Node Affinity/Anti-affinity:
+
+You can specify node affinity to influence which node(s) a Pod can be scheduled on. For example, you may want to restrict certain Pods to specific nodes.
+Anti-affinity ensures that Pods are distributed across nodes in a way that avoids placing them together.
+Taints and Tolerations:
+
+Nodes can be "tainted" to prevent specific types of Pods from being scheduled on them unless the Pod has a matching toleration.
+This allows Kubernetes to limit certain nodes for specialized workloads, ensuring that Pods without the necessary tolerations aren’t scheduled on those nodes.
+Pod Affinity/Anti-affinity:
+
+You can configure Pods to prefer (affinity) or avoid (anti-affinity) being placed near other specific Pods. For example, you can distribute replicas across nodes by using anti-affinity rules.
+Pod Spreading (Topology Spread Constraints):
+
+You can define topology spread constraints to ensure Pods are evenly distributed across different zones, nodes, or other topological domains.
+This ensures high availability by avoiding placing too many replicas of a Pod on the same node or failure domain.
+Node Selector and Labels:
+
+If a node has specific labels (e.g., env=prod, region=us-east-1), you can use the nodeSelector field in your Pod spec to ensure that Pods are scheduled on nodes with matching labels.
+Default Scheduler’s Pod Distribution Behavior:
+
+By default, Kubernetes tries to evenly distribute Pods across nodes based on resource usage (CPU and memory).
+The scheduler considers the "least-loaded node" principle, where it prefers nodes with lower resource usage, to maintain a balanced load across all nodes.
+
+Additional Considerations:
+Cluster Autoscaler:
+
+If the cluster is configured with autoscaling, and there are not enough resources on any of the nodes to schedule a Pod, Kubernetes can automatically provision more nodes to handle the additional load.
+Pod Priority and Preemption:
+
+If there are no available nodes with sufficient resources, Kubernetes can use preemption to evict lower-priority Pods and make room for higher-priority ones.
+Scaling Up and Down:
+
+As more Pods are created or deleted, the scheduler continues to try and balance the distribution across all available nodes.

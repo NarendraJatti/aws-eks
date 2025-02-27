@@ -1,0 +1,10 @@
+if you create pod to retrive secret from sm,if you don't have SA permission,
+then secret volume mounts fails>contianer will be in creating state only 
+
+  Warning   FailedMount      pod/test-secret-pod                  MountVolume.SetUp failed for volume "secrets-store-inline" : rpc error: code = Unknown desc = failed to mount secrets store objects for pod default/test-secret-pod, err: rpc error: code = Unknown desc = us-east-1: An IAM role must be associated with service account default (namespace: default)
+
+  ~ $ kubectl logs test-secret-pod
+Error from server (BadRequest): container "test-container" in pod "test-secret-pod" is waiting to start: ContainerCreating
+~ $ kubectl get poNAME              READY   STATUS              RESTARTS   AGE
+test-secret-pod   0/1     ContainerCreating   0          12m
+~ $ 

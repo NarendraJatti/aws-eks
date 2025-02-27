@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app
+spec:
+  containers:
+    - name: my-container
+      image: nginx
+      resources:
+        requests:
+          memory: "200Gi"   # Pod is requesting more memory than available on the node
+          cpu: "100m"
+

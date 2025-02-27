@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: high-load-deployment
+spec:
+  replicas: 1000  # Increase the number of replicas to add more load
+  selector:
+    matchLabels:
+      app: high-load-app
+  template:
+    metadata:
+      labels:
+        app: high-load-app
+    spec:
+      containers:
+        - name: high-load-container
+          image: nginx
+          resources:
+            requests:
+              memory: "2Gi"
+              cpu: "500m"
+            limits:
+              memory: "4Gi"
+              cpu: "1"

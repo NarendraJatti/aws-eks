@@ -1,0 +1,31 @@
+5. Pods not getting terminated after deployment update
+Problem Configuration:
+Old pods are not getting terminated due to a misconfigured readiness probe, which causes them to stay active, preventing the rolling update from completing.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+  template:
+    spec:
+      containers:
+        - name: my-container
+          image: my-app-image:v1
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 1  # Incorrect threshold causing probe failures
+
+========
+solution
+========
+initialDelaySeconds: 10  # Increased delay to give time for app startup
+            periodSeconds: 5
+            failureThreshold: 3  # Increased threshold to allow retries before failure
