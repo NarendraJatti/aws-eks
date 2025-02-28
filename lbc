@@ -1,0 +1,22 @@
+
+Yes, if you don't explicitly specify the target type for a Kubernetes service of type LoadBalancer with an AWS Network Load Balancer (NLB), the default behavior is to use the worker nodes (EC2 instances) as targets.
+
+What tags are applied to subnets where our EKS cluster is deployed?
+
+A. kubernetes.io/cluster/my-cluster
+B. kubernetes.io/role/internal-elb
+C. kubernetes.io/role/elb
+
+line 878
+
+kubectl apply -f dep.yaml -f svc.yaml -f configmap.yaml or 
+kubectl apply -f ./your-directory/
+kubectl apply -f *.yaml
+
+
+
+root@aws-client:~/amazon-elastic-kubernetes-service-course/eks# kubectl get deployment -n kube-system
+NAME                           READY   UP-TO-DATE   AVAILABLE   AGE
+aws-load-balancer-controller   1/1     1            1           46s
+coredns                        2/2     2            2           9m56s
+root@aws-client:~/amazon-elastic-kubernetes-service-course/eks# 
