@@ -67,6 +67,7 @@ kubectl delete -f image-updater.yaml>>to delete created resources
  kubectl describe pod argocd-image-updater-6b86848f4f-m9gt5 -n argocd
 
 
+
 trungtran@Trungs-MacBook-Air ~ % kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
 uTr6ewKaycVPA3Jd
 
@@ -93,3 +94,53 @@ https://medium.com/@megaurav25/argocd-image-updater-fbc93dc15e34
 https://www.youtube.com/watch?v=9zic7kKh_zU&t=22s
 ArgoCD Image Updater is a tool that helps automate the deployment of updated container images in Kubernetes clusters managed by ArgoCD. Instead of manually updating image versions in Kubernetes manifests (such as Helm charts, Kustomize, or plain YAML files), ArgoCD Image Updater automatically detects new container image versions and triggers ArgoCD to deploy these updates.
 
+
+
+argo
+=====
+Argo is a suite of open-source tools designed to help manage Kubernetes-native workflows, events, and application delivery processes. It offers powerful features for orchestrating events, automating workflows, continuous delivery, and implementing progressive rollouts. Below is an explanation of each component—Argo Events, Workflows & Pipelines, CD, and Rollouts—along with examples, their purpose, and how they can help:
+
+
+Without persistent storage, logs and data are stored in ephemeral storage like emptyDir, which is created in the container's filesystem. This means that:
+
+Logs and data are stored in-memory or on the node's disk temporarily.
+Data is lost when the pod is terminated, restarted, or if the node fails.
+For long-term storage of logs and metrics in production environments, you should use persistent storage. In AWS, this can be done by provisioning gp2 EBS volumes or S3 buckets for larger, long-term log retention. Here's why:
+
+for custom metrics(exposed/instrumented in code using prom-client library)
+=================
+Example configuration for Prometheus (prometheus.yml):
+scrape_configs:
+  - job_name: 'custom-app'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['<your-app-service>:3000']  # Replace with your app's service or IP
+
+
+
+important
+===========
+we can use service monitor object provided promethes operator.
+using this we can also scrape custom metrics by defining service monitor yaml(has labelselectors for custom app pod)
+so no need to add scrape job to promethes.yaml file 
+
+How Prometheus Scrapes Metrics
+Prometheus scrapes metrics from applications via HTTP requests. By default, Prometheus looks for a /metrics endpoint, where your app exposes the metrics data in a specific format. The following steps occur:
+
+Instrumentation: Your custom application (Node.js, Python, Go, etc.) exposes metrics at the /metrics endpoint using the Prometheus client libraries.
+
+Scrape Config: In Prometheus’ configuration (prometheus.yml), you define a scrape_configs section that lists the targets (your custom app) that Prometheus should scrape.
+
+ServiceMonitor (Kubernetes): If you're running your custom app in Kubernetes, you can use a ServiceMonitor to define which services should be scraped by Prometheus. Prometheus Operator automatically manages scraping for services that have an associated ServiceMonitor.
+
+
+Yes, using a ServiceMonitor in combination with Prometheus Operator helps automate the discovery of services to scrape, without manually configuring each service in the prometheus.yaml file. Here’s why a ServiceMonitor is helpful and how it works:
+
+Why ServiceMonitor is needed:
+Dynamic Service Discovery: In Kubernetes, services can be ephemeral, and IP addresses or service details might change. Manually updating prometheus.yaml for every new or changed service can be cumbersome. The ServiceMonitor solves this by automatically discovering services that need to be scraped based on Kubernetes labels and selectors.
+
+Declarative Monitoring: ServiceMonitor allows you to define monitoring configurations declaratively using Kubernetes CRDs (Custom Resource Definitions). This means you can manage Prometheus scraping configurations in the same way as you manage other Kubernetes resources, which is more integrated and scalable.
+
+No Manual prometheus.yaml: The Prometheus Operator automatically generates the equivalent of a prometheus.yaml configuration file, but it is not stored as a file that you directly edit. Instead, the operator dynamically updates Prometheus’ configuration based on the custom resources you define (like ServiceMonitor and PodMonitor) in Kubernetes.
+
+ServiceMonitor and PodMonitor resources serve as the primary way to configure Prometheus scraping targets**, so when you deploy or update these resources, the operator automatically detects changes and adjusts the Prometheus configuration accordingly.

@@ -1,0 +1,35 @@
+Yes, you can absolutely use AWS Certificate Manager (ACM) to generate and manage SSL/TLS certificates and attach them to the AWS Application Load Balancer (ALB) to enable HTTPS in your Kubernetes cluster. This method is commonly used in Kubernetes deployments running on AWS, especially when you use ALB Ingress Controller.
+
+To enable the integration of AWS services like ALB with Kubernetes, you need to install the AWS Load Balancer Controller (previously known as the ALB Ingress Controller).
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: example-ingress
+  namespace: default
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:123456789012:certificate/your-acm-certificate-arn
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/ssl-redirect: '443'   # Redirect HTTP to HTTPS
+spec:
+  rules:
+  - host: yourdomain.com   # Your domain
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: example-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - yourdomain.com
+    secretName: tls-secret   # Not needed when using ACM, but commonly included for clarity
+
+
+another alterntiave for without using acm is,
+create a self signed cert,create k8 secret to sttore cert and key and use 
+the tls-secret as secretName in ingress yaml

@@ -1,0 +1,69 @@
+https://www.youtube.com/watch?v=U4tCYcCK20w
+
+
+argo
+=====
+Argo is a suite of open-source tools designed to help manage Kubernetes-native workflows, events, and application delivery processes. It offers powerful features for orchestrating events, automating workflows, continuous delivery, and implementing progressive rollouts. Below is an explanation of each component—Argo Events, Workflows & Pipelines, CD, and Rollouts—along with examples, their purpose, and how they can help:
+
+1. Argo Events:
+Argo Events is an event-driven workflow automation framework that allows you to trigger Kubernetes workflows or other actions based on external events, such as webhooks, time-based schedules, or messages in Kafka, SQS, etc.
+
+Why We Need It:
+Automated Event Triggers: Automates workflows based on external or internal events, reducing manual intervention.
+Efficient Operations: Enables reactive systems, where actions occur based on real-world inputs, like a new file in S3, a message on a queue, or a Git commit.
+Example Use Case:
+CI/CD Pipeline Trigger: Argo Events can trigger a CI/CD pipeline when a new commit is pushed to a GitHub repository.
+Source: GitHub webhook event (e.g., commit push).
+Action: Trigger a workflow to build and deploy the application.
+How It Helps:
+Automates response to events without manual intervention.
+Integrates with Kubernetes for native cloud-native workloads.
+Reduces human error by automating workflows based on real-time events.
+
+
+ 
+
+2. Argo Workflows & Pipelines:
+Argo Workflows is a Kubernetes-native workflow engine for orchestrating parallel jobs. Argo Pipelines is an extension of Argo Workflows that allows you to manage data science, machine learning pipelines, and CI/CD flows.
+
+Why We Need It:
+Complex Workflow Automation: Orchestrates complex multi-step workflows, such as CI/CD processes, ML pipelines, or data processing jobs.
+Scalable: Natively scales with Kubernetes and handles parallelism.
+Example Use Case:
+CI/CD Pipeline: Argo Workflows can define a multi-step process where the steps include compiling code, running tests, building Docker images, and deploying the application.
+How It Helps:
+Automates workflows for CI/CD pipelines, data pipelines, etc.
+Parallel Execution: Supports parallel jobs, such as running multiple tests simultaneously.
+Integration with Kubernetes: Fully integrated with Kubernetes, simplifying management in cloud-native environments.
+
+
+
+3. Argo CD (Continuous Delivery):
+Argo CD is a declarative, GitOps-based continuous delivery tool for Kubernetes applications. It ensures that your Kubernetes resources are always in sync with a Git repository.
+
+Why We Need It:
+GitOps Workflow: Automatically syncs application state with a Git repository, ensuring that your Kubernetes clusters are always in the desired state.
+Version Control: Git becomes the source of truth for application configuration, providing version control, rollback, and auditability.
+Example Use Case:
+Application Deployment: When a developer pushes a change to a Git repository, Argo CD automatically updates the Kubernetes cluster to deploy the new version.
+How It Helps:
+Automated Continuous Delivery: Ensures that changes in Git automatically apply to Kubernetes clusters.
+GitOps Best Practices: Provides a declarative approach to application delivery, enabling faster rollbacks and better collaboration through version control.
+Rollback: Easily rollback to a previous Git commit to revert changes.
+
+
+
+
+
+4. Argo Rollouts:
+Argo Rollouts is a progressive delivery controller that supports advanced deployment strategies like Canary and Blue-Green deployments for Kubernetes applications.
+
+Why We Need It:
+Safer Deployments: Enables incremental deployments, reducing risk during rollouts and ensuring that issues can be detected early before impacting users.
+Controlled Rollouts: Progressive delivery allows for controlled traffic shifting to new versions of an application, with automated rollback if metrics show issues.
+Example Use Case:
+Canary Deployment: Deploy a new version of your application, sending a small percentage of traffic to the new version while monitoring metrics. If everything looks good, gradually shift more traffic.
+How It Helps:
+Safer Deployments: Reduces the risk of failure by using strategies like canary or blue-green.
+Automatic Rollbacks: Can automatically roll back to the previous version if any issues are detected during deployment.
+Continuous Monitoring: Integrates with monitoring systems like Prometheus to track key metrics during deployments.

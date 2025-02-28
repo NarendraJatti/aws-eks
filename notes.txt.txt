@@ -1,3 +1,72 @@
+terraform installtion Steps 
+=====================
+curl -O "https://releases.hashicorp.com/terraform/1.5.6/terraform_1.5.6_linux_amd64.zip"
+unzip terraform_1.5.6_linux_amd64.zip
+sudo mv terraform /usr/local/bin/
+terraform -v
+git clone https://github.com/kodekloudhub/amazon-elastic-kubernetes-service-course
+    
+   cd amazon-elastic-kubernetes-service-course/eks
+
+
+   
+   #.\check-environment.ps1
+   source check-environment.sh
+   terraform init
+
+
+
+   terraform plan
+   terraform apply
+
+eksctl installation
+==================
+# Download the eksctl binary for Linux (64-bit)
+curl -LO "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_Linux_amd64.tar.gz"
+# Extract the tarball
+tar -xzf eksctl_Linux_amd64.tar.gz
+# Move the binary to a location in your PATH
+sudo mv eksctl /usr/local/bin
+# Confirm the installation
+eksctl version
+
+helm installation
+=====================
+# Download the latest Helm installation script
+curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+
+# Confirm installation
+helm version
+
+prometheus installation
+======================
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm repo update
+helm install prometheus prometheus-community/prometheus \
+--namespace monitoring --create-namespace \
+--set server.persistentVolume.enabled=false \
+--set alertmanager.persistentVolume.enabled=false
+
+
+grafana installation
+================
+helm repo add grafana https://grafana.github.io/helm-charts
+helm repo update
+helm install grafana grafana/grafana \
+--namespace monitoring \
+--set persistence.enabled=false \
+--set adminPassword='admin'
+
+kubectl patch svc prometheus-server -n monitoring -p '{"spec": {"type": "NodePort"}}'
+kubectl patch svc grafana -n monitoring -p '{"spec": {"type": "NodePort"}}'
+
+trungtran@Trungs-MacBook-Air ~ % kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d; echo
+uTr6ewKaycVPA3Jd
+
+
+==================
+
+
 https://github.com/kodekloudhub/amazon-elastic-kubernetes-service-course/blob/main/docs/deploy.md
 https://github.com/kodekloudhub/amazon-elastic-kubernetes-service-course/blob/main/docs/nodes.md
 https://github.com/kodekloudhub/jenkins-project/blob/main/eksClusterCreation.md
@@ -157,6 +226,9 @@ $ history
    #.\check-environment.ps1
    source check-environment.sh
    terraform init
+
+
+
    terraform plan
    terraform apply
    curl http://localhost:8080
@@ -335,3 +407,39 @@ ENIs: An ENI is a virtual network interface that can be attached to an EC2 insta
 Pod IPs: Each pod in Kubernetes is assigned a unique IP address. In AWS EKS, pods get IP addresses from the ENIs attached to the worker node (EC2 instance).
 Example: A t3.medium instance supports 3 ENIs, and each ENI can have 6 IPs, giving a total of 17 pods (1 IP for the instance itself).
 A larger instance type, such as an m5.4xlarge, supports more ENIs and IPs per ENI, allowing you to run many more pods.
+
+
+Ingrees targets 
+1) worker nodes
+2)pods IP
+ IP Target Type (Recommended)
+What it does: ALB routes traffic directly to the pod IPs, bypassing the need for node-level routing.
+How it works: ALB uses the Elastic Network Interface (ENI) attached to the worker nodes to directly communicate with the pods, and the pods' IPs are registered as targets in the ALB.
+When to use: Recommended for Kubernetes environments, especially when you're using dynamic scaling, as it directly targets pods.
+
+Which is Recommended?
+IP target type is generally recommended for Kubernetes environments, especially if you're using dynamic workloads (such as autoscaling, microservices architecture) because it provides:
+More efficient and direct routing.
+Lower latency by eliminating the extra node hop.
+Better support for modern Kubernetes deployments, where pods may scale up or down dynamically, and services might move around the cluster.
+
+Create HPA for CPU-based Scaling
+You can create an HPA to scale your pods based on CPU utilization with a simple command or by defining it in YAML.
+
+Option 1: Using kubectl Command
+
+kubectl autoscale deployment my-app --min=2 --max=10 --cpu-percent=50
+--min: Minimum number of replicas.
+--max: Maximum number of replicas.
+--cpu-percent: Target average CPU utilization across all pods (as a percentage of the CPU request defined in the deployment).
+or option-2
+you can use hpa yaml instead of kubectl 
+
+
+custom metrics pushing
+====================
+Node Exporter is a Prometheus exporter that collects hardware and OS-level metrics, like CPU usage, memory consumption, disk I/O, and network statistics from the host it runs on.
+
+In Kubernetes, a ServiceMonitor is used to define how Prometheus should scrape metrics from services running in your cluster. This is part of the Prometheus Operator and simplifies the process of scraping multiple services for metrics. Without ServiceMonitor, you'd have to manually configure each target in Prometheus, which can be cumbersome.
+
+Purpose: ServiceMonitor allows you to automatically configure Prometheus to scrape your application (in this case, Nginx) for metrics by defining endpoints and matching labels.e
