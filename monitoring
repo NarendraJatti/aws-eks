@@ -80,7 +80,12 @@ In most learning environments, demos, and small projects, we typically deploy Pr
 
 argocd image updater 
 ============
+https://youtu.be/9zic7kKh_zU?si=jMgy02jhLf9sqzeS
+https://argocd-image-updater.readthedocs.io/en/stable/
+image updater will updater mainifest files values in git(doing git commit-creds requireed) >sync dep in argo/k8 cluster 
+or argocd cluster resources will  be directly updatedd
 argocd admin dashboard
+image arg plugin  
 
 https://medium.com/@megaurav25/argocd-image-updater-fbc93dc15e34
 https://www.youtube.com/watch?v=9zic7kKh_zU&t=22s
