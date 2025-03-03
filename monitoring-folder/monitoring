@@ -88,7 +88,13 @@ https://argocd-image-updater.readthedocs.io/en/stable/
 image updater will updater mainifest files values in git(doing git commit-creds requireed) >sync dep in argo/k8 cluster 
 or argocd cluster resources will  be directly updatedd
 argocd admin dashboard
-image arg plugin  
+image update arg plugin  
+important>you can also do update the image in argo (updating k8 manifest values in git) using 
+jenkins Pipelines also>>refer jenkins with argocd kodekloud last section (jenkins piplein uses shell script/command(sed command) to commit new image to git>then argd syncs it to cluster)
+
+
+
+
 
 https://medium.com/@megaurav25/argocd-image-updater-fbc93dc15e34
 https://www.youtube.com/watch?v=9zic7kKh_zU&t=22s

@@ -1,0 +1,16 @@
+https://aws.plainenglish.io/how-we-slashed-our-eks-bill-by-40-a-real-story-96b93ef7d450
+
+access entries
+=========
+https://medium.com/@leocherian/amazon-eks-cluster-access-management-399de5fcf0be>good
+https://medium.com/@john.shaw.zen/eks-access-entry-migrate-from-aws-auth-95b2fb7f6c4c
+https://fixit-xdu.medium.com/aws-eks-access-entry-4a7e25ed6c3a
+https://www.youtube.com/watch?v=dJljyWT38wU>>iam entries access
+https://www.youtube.com/watch?v=EGdN21F2Jfw>>iam entries access
+https://www.youtube.com/watch?v=EGdN21F2Jfw&t=1s>acces entries
+https://dev.to/aws-builders/managing-aws-eks-access-entries-with-terraform-and-opentofu-414
+
+
+eks questions>https://youtu.be/TPH5TAeZwg8?si=1qc_h-FxQf65-Tdo
+
+EKS nodegroups instance types cannot be changed after creation. You'll have to create a new node group every time you'd like a new instance type.

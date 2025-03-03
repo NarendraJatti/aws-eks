@@ -29,6 +29,11 @@ tar -xzf eksctl_Linux_amd64.tar.gz
 sudo mv eksctl /usr/local/bin
 # Confirm the installation
 eksctl version
+or 
+curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+~ $ sudo mv /tmp/eksctl /usr/local/bin
+~ $ eksctl version
+eksctl create cluster --name demo2 --region us-east-1 --fargate
 
 helm installation
 =====================
@@ -443,3 +448,12 @@ Node Exporter is a Prometheus exporter that collects hardware and OS-level metri
 In Kubernetes, a ServiceMonitor is used to define how Prometheus should scrape metrics from services running in your cluster. This is part of the Prometheus Operator and simplifies the process of scraping multiple services for metrics. Without ServiceMonitor, you'd have to manually configure each target in Prometheus, which can be cumbersome.
 
 Purpose: ServiceMonitor allows you to automatically configure Prometheus to scrape your application (in this case, Nginx) for metrics by defining endpoints and matching labels.e
+
+node draining
+=============
+Draining a node in Amazon EKS (or any Kubernetes cluster) is the process of safely evicting all running pods from a node, preparing it for maintenance, updates, or decommissioning. This ensures that the workloads (pods) running on that node are gracefully terminated and rescheduled onto other healthy nodes without causing disruptions.
+When you are changing the instance type of your EKS node group, you create a new node group. The old node group needs to be drained so that pods running on those nodes can be moved to the new node group.
+If you need to perform maintenance on an EC2 instance in your EKS node group (e.g., system upgrades, disk space cleaning, etc.), you first drain the node to migrate the pods to other nodes temporarily.
+Before deleting a node group or terminating a node (such as when upgrading to new EC2 instance types), you drain the node to safely move all running workloads.
+During an EKS cluster upgrade (Kubernetes version or Amazon EKS optimized AMI update), it's best to drain nodes before shutting them down to ensure that pods are properly rescheduled.
+When a node is drained, Kubernetes prevents it from accepting new pods and begins evicting the currently running pods.

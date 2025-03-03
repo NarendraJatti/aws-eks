@@ -1,3 +1,19 @@
 https://www.youtube.com/watch?v=Cfznp8jRh7I
 
 https://gist.github.com/iam-veeramalla/7e32999189f4aa9064334d1d27bd877c
+
+https://www.youtube.com/watch?v=aDfs1T18FfQ
+https://www.youtube.com/watch?v=K76NmcHS-kQ >>good
+https://github.com/doitintl/kube-no-trouble>good
+https://www.youtube.com/watch?v=kJrOBkeVluw&list=PLLh98oBzdb7YLnm-67RnNIjrD98g1w2js&index=10>>fargate
+
+
+kubent 
+kubent -t 1.11(any version to check deprications)
+
+eksctl upgrade
+k9s utility 
+
+The control plane is generally backward compatible with worker nodes that are one minor version behind. For example, a v1.23 control plane can still manage v1.22 nodes.
+
+If the version gap becomes too large, nodes may lose compatibility with the control plane. This can lead to failed deployments, pod scheduling issues, or resource mismanagement.(e.g., v1.24 control plane, v1.21 nodes)
