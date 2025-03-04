@@ -5,3 +5,93 @@ prod version > highly avaible >raft storage(built-in storage ) ,consul external 
  prod-version -deleter or restart pod-data will be there ,
  minimum 3 pods,valut-0(leader),vault-1,2(1,2 followr)>>highly availbe 
 
+
+Vault offers several authentication methods to secure and control access to its secrets management. When integrating Vault with Kubernetes, you typically use the Kubernetes authentication method, which allows Kubernetes workloads to authenticate with Vault and retrieve secrets securely
+
+Vault CLI installed and configured,uisng helm on eks .
+
+Enable Kubernetes Authentication in Vault:
+kubectl exec -n vault -it vault-0  --vault auth enable kubernetes
+
+Configure Vault to Communicate with Kubernetes:
+
+Vault needs to be able to authenticate with the Kubernetes API. You'll need the Kubernetes service account JWT token, the Kubernetes host URL, and the CA certificate to complete this setup.
+
+Retrieve the JWT token:
+kubectl -n <namespace> get secret $(kubectl -n <namespace> get sa <vault-sa> -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
+
+Create a Vault Role for Kubernetes Workloads:
+Create a Kubernetes Service Account:
+Configure Your Kubernetes Workload: to use the vault secrets
+Authenticate and Retrieve Secrets from Vault:
+vault login -method=kubernetes role=<role_name> \
+    jwt=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+    Configure Vault Policies:>>my-app-policy.hcl
+path "secret/data/myapp/*" {
+  capabilities = ["read"]
+}
+
+
+
+kubectl exec -it <pod-name> -- cat /app/secrets/db-password
+This will display the db-password stored in Vault (s3cr3tP@ssw0rd in this case).
+
+create the service account, deployment, and config map. Once the pod is running, the Vault Agent will automatically authenticate, retrieve the db-password from Vault, and make it available to the app.
+
+
+
+Key Vault Components
+Secret Engines:
+
+Vault uses secret engines to store and generate secrets dynamically. Different secret engines support various types of secrets (e.g., static secrets like passwords, dynamic secrets like database credentials, certificates, etc.).
+Examples of secret engines include:
+KV (Key/Value): Stores static secrets.
+Database: Dynamically generates database credentials.
+PKI: Issues and manages certificates.
+AWS: Manages AWS IAM roles and credentials dynamically.
+
+Authentication Methods:
+
+Vault supports various authentication methods to validate the identity of clients. Auth methods issue tokens based on the identity of the client and assign permissions using policies.
+Examples include:
+Kubernetes Auth: Authenticates Kubernetes workload
+
+Policies:
+
+Policies define what actions authenticated users or applications can perform in Vault. They determine which paths are accessible, and what capabilities (e.g., read, write, list) are allowed on those paths.
+Policies are written in HCL (HashiCorp Configuration Language) or JSON
+path "secret/data/db-config" {
+  capabilities = ["read"]
+}
+
+Tokens:
+
+Tokens are the method of accessing secrets and interacting with Vault. Tokens are issued after successful authentication and are tied to policies that define what the token can do.
+Tokens can be renewable or non-renewable and can have a time-to-live (TTL) to limit the duration of access.
+
+Vault Agents:
+
+Vault Agent is a client-side tool that simplifies authenticating and interacting with Vault from applications. It can automatically authenticate and retrieve secrets, caching them locally.
+
+Audit Devices:
+
+Vault supports audit devices to log all interactions with Vault, providing a trail of activity for compliance and troubleshooting. Audit logs can be written to files, syslog, or third-party services.
+
+Storage Backends:
+
+Vault stores data (such as secrets and configuration) using storage backends. The choice of storage backend impacts how Vault achieves high availability and disaster recovery.
+Examples include:
+Raft (for HA setups).
+Consul.
+Amazon S3.
+
+Summary
+Vault achieves high availability with Raft by utilizing leader election, log replication, and automatic failover.
+The Raft consensus algorithm ensures that only one leader processes write requests and all changes are replicated to follower nodes, providing fault tolerance and consistent data.
+The strong consistency model ensures that all nodes have the same view of the data, while scaling horizontally allows for high performance and availability in production environments.
+
+
+
+
+
+
