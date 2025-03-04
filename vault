@@ -1,0 +1,7 @@
+secret management tool 
+dev version>>temp storage in RAM(no persistent storage ) 
+prod version > highly avaible >raft storage(built-in storage ) ,consul external storage(db)
+ go for consul if want to use it for other Purpose ffor k8 
+ prod-version -deleter or restart pod-data will be there ,
+ minimum 3 pods,valut-0(leader),vault-1,2(1,2 followr)>>highly availbe 
+

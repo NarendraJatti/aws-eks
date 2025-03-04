@@ -457,3 +457,11 @@ If you need to perform maintenance on an EC2 instance in your EKS node group (e.
 Before deleting a node group or terminating a node (such as when upgrading to new EC2 instance types), you drain the node to safely move all running workloads.
 During an EKS cluster upgrade (Kubernetes version or Amazon EKS optimized AMI update), it's best to drain nodes before shutting them down to ensure that pods are properly rescheduled.
 When a node is drained, Kubernetes prevents it from accepting new pods and begins evicting the currently running pods.
+
+
+When you drain a node in Amazon EKS (or any Kubernetes cluster), Kubernetes automatically handles the migration of pods from that node to other healthy nodes in the cluster. This is a core feature of Kubernetes' self-healing and high-availability mechanisms. 
+
+Kubernetes does not evict DaemonSet-managed pods during a node drain. DaemonSets are meant to run on every node, and they are recreated automatically when the node is ready or available again.
+
+
+The Kubernetes API server uses certificates to authenticate itself to other components like kubelets, controllers, and users. The communication between the API server and the kubelets, as well as other components, is secured with TLS (Transport Layer Security) using certificates.

@@ -1,0 +1,43 @@
+
+Node Drain Command: The node drain process is initiated using the kubectl drain command, which marks the node as unschedulable (so new pods are not scheduled on it) and starts evicting all the pods running on that node.
+
+PodDisruptionBudgets (PDBs): If a PodDisruptionBudget is defined for the application, Kubernetes will honor it, ensuring that a minimum number of pods are always running, even during node drain operations. This prevents too many pods from being evicted simultaneously.
+
+A Pod Disruption Budget (PDB) specifies the minimum number of replicas that should remain available or the maximum number of replicas that can be disrupted during voluntary disruptions like draining a node or performing maintenance.
+
+
+
+kubectl create deployment test-nginx --image=nginx
+
+kubectl scale deployment test-nginx --replicas=5
+
+
+kubectl drain <NODE_NAME> --ignore-daemonsets --delete-emptydir-data
+
+kubectl drain ip-172-31-4-230.ec2.internal --ignore-daemonsets --delete-emptydir-data
+
+kubectl uncordon <NODE_NAME>
+
+Why Pods Were Evicted:
+The value of Allowed Disruptions = 3 indicates that Kubernetes had enough replicas running to maintain the required minAvailable: 2. This allowed Kubernetes to safely evict the pods without violating the PDB.
+
+Since you have more than 2 pods running for your test-nginx deployment (in total there were 5 before draining), evicting 2 pods would not reduce the running pods below the minimum availability threshold of 2. Therefore, the eviction was permitted.
+
+How It Works:
+You had 5 replicas of the test-nginx pods running.
+The PDB allowed 3 pods to be disrupted (evicted or rescheduled) without violating the rule of keeping at least 2 available.
+After draining the node, Kubernetes immediately rescheduled the evicted pods onto other nodes, ensuring the minAvailable requirement was continuously met.
+Key Point:
+As long as there are enough replicas to maintain the required number of available pods (minAvailable: 2), Kubernetes will allow pod evictions during node draining.
+
+
+
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: test-nginx-pdb
+spec:
+  minAvailable: 2  # Ensures at least 2 pods are always running
+  selector:
+    matchLabels:
+      app: test-nginx
