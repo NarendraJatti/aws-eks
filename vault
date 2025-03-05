@@ -90,7 +90,18 @@ Vault achieves high availability with Raft by utilizing leader election, log rep
 The Raft consensus algorithm ensures that only one leader processes write requests and all changes are replicated to follower nodes, providing fault tolerance and consistent data.
 The strong consistency model ensures that all nodes have the same view of the data, while scaling horizontally allows for high performance and availability in production environments.
 
+To install a Raft consensus-based HashiCorp Vault in High Availability (HA) mode on AWS EKS, we use the Vault Helm chart to deploy Vault in HA with a Raft integrated storage backend.
 
+vault injector
+================
+Vault Injector is a feature of HashiCorp Vault that allows you to inject secrets (like API keys, database credentials, or other sensitive data) directly into Kubernetes pods. It simplifies and automates the process of fetching secrets from Vault and securely providing them to applications running in Kubernetes. The Vault Injector works as a Kubernetes Mutating Admission Webhook.
+When a pod is created, the Vault Injector fetches the necessary secrets from the Vault server.
+The secrets are retrieved dynamically, based on annotations in the pod’s definition or using specific Vault policies.
+After fetching the secrets, the Vault Injector injects them into the pod as environment variables or as files in a volume mount (such as Kubernetes ConfigMap or Secret).
+This allows applications running in the pod to securely access the secrets
+Vault Injector can automatically update the injected secrets when they are rotated in Vault. This helps avoid disruptions to applications while ensuring the use of up-to-date secrets.
+
+HashiCorp Vault is not inherently a StatefulSet, but it can be deployed as a StatefulSet in Kubernetes when you want it to have persistent storage for high availability (HA) and data persistence.
 
 
 

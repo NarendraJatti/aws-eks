@@ -80,6 +80,7 @@ https://github.com/kodekloudhub/jenkins-project/blob/main/eksClusterCreation.md
 showcreds
 
 
+
 latest>>https://github.com/kodekloudhub/certified-kubernetes-administrator-course/blob/master/managed-clusters/eks/console/docs/01-sign-in.md
 describe short ds
 
@@ -465,3 +466,5 @@ Kubernetes does not evict DaemonSet-managed pods during a node drain. DaemonSets
 
 
 The Kubernetes API server uses certificates to authenticate itself to other components like kubelets, controllers, and users. The communication between the API server and the kubelets, as well as other components, is secured with TLS (Transport Layer Security) using certificates.
+
+In Kubernetes, a StatefulSet is used for managing stateful applications, which require stable identities and persistent storage. For example, databases like MySQL, Cassandra, or Kafka that need to maintain state across restarts use StatefulSets to ensure each pod retains its identity and attached storage.

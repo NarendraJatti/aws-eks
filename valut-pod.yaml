@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-app
+  annotations:
+    vault.hashicorp.com/agent-inject: "true"
+    vault.hashicorp.com/agent-inject-secret-credentials.txt: "secret/data/my-app"
+spec:
+  containers:
+    - name: my-app
+      image: my-app-image
+      volumeMounts:
+        - name: vault-secrets
+          mountPath: /vault/secrets
+  volumes:
+    - name: vault-secrets
+      emptyDir: {}

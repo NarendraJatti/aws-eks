@@ -14,3 +14,9 @@ https://dev.to/aws-builders/managing-aws-eks-access-entries-with-terraform-and-o
 eks questions>https://youtu.be/TPH5TAeZwg8?si=1qc_h-FxQf65-Tdo
 
 EKS nodegroups instance types cannot be changed after creation. You'll have to create a new node group every time you'd like a new instance type.
+
+Yes, you are correct. For secrets managed by AWS Secrets Manager, the application or pod needs to be restarted in most cases to fetch updated secrets. This is because the pod typically retrieves secrets only at startup and caches them in memory.
+
+On the other hand, Vault Injector automatically updates secrets in the pod when they are rotated or changed, without requiring a pod restart. Vault Injector uses an agent to ensure that secrets are periodically updated and available to the application, avoiding the need for a manual restart.
+
+If you need to automate the secret update process in an application fetching secrets from AWS Secrets Manager, you could implement a mechanism to periodically pull the latest secrets, or consider using a sidecar that can refresh secrets without restarting the pod.

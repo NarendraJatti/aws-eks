@@ -1,0 +1,91 @@
+  Normal  FailedBinding  3m5s (x142 over 38m)  persistentvolume-controller  no persistent volumes available for this claim and no storage class is set
+~ $ kubectl describe pvc data-vault-1 -n vault                                                                                                                                                                                                                                       
+Name:          data-vault-1
+Namespace:     vault
+StorageClass:  gp2-csi
+Status:        Bound
+Volume:        pvc-00407bc4-dab3-463c-94ee-f0252e80b0f3
+Labels:        app.kubernetes.io/instance=vault
+               app.kubernetes.io/name=vault
+               component=server
+Annotations:   pv.kubernetes.io/bind-completed: yes
+               pv.kubernetes.io/bound-by-controller: yes
+               volume.beta.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+               volume.kubernetes.io/selected-node: ip-172-31-21-194.ec2.internal
+               volume.kubernetes.io/storage-provisioner: ebs.csi.aws.com
+Finalizers:    [kubernetes.io/pvc-protection]
+Capacity:      10Gi
+Access Modes:  RWO
+VolumeMode:    Filesystem
+Used By:       vault-1
+Events:
+  Type    Reason                 Age                    From                                                                                      Message
+  ----    ------                 ----                   ----                                                                                      -------
+  Normal  FailedBinding          3m17s (x142 over 38m)  persistentvolume-controller                                                               no persistent volumes available for this claim and no storage class is set
+  Normal  Provisioning           3m1s                   ebs.csi.aws.com_ebs-csi-controller-6cd4bccd45-g6dln_c94dc3f7-4ec6-4045-b78d-f2d672364138  External provisioner is provisioning volume for claim "vault/data-vault-1"
+  Normal  ProvisioningSucceeded  2m58s                  ebs.csi.aws.com_ebs-csi-controller-6cd4bccd45-g6dln_c94dc3f7-4ec6-4045-b78d-f2d672364138  Successfully provisioned volume pvc-00407bc4-dab3-463c-94ee-f0252e80b0f3
+~ $ kubectl get pvc -n vault                                                                                                                                                                                                                                                         
+NAME           STATUS    VOLUME                                     CAPACITY   ACCESS MODES   STORAGECLASS   VOLUMEATTRIBUTESCLASS   AGE
+data-vault-0   Bound     pvc-7e9e4327-60a4-4fd1-acbb-6c6dfe831bd6   10Gi       RWO            gp2            <unset>                 38m
+data-vault-1   Bound     pvc-00407bc4-dab3-463c-94ee-f0252e80b0f3   10Gi       RWO            gp2-csi        <unset>                 38m
+data-vault-2   Pending                                                                        gp2-csi        <unset>                 38m
+
+
+~ $ kubectl get events -n vault
+LAST SEEN   TYPE      REASON                            OBJECT                                       MESSAGE
+14m         Normal    FailedBinding                     persistentvolumeclaim/data-vault-0           no persistent volumes available for this claim and no storage class is set
+9m30s       Normal    ExternalProvisioning              persistentvolumeclaim/data-vault-0           Waiting for a volume to be created either by the external provisioner 'ebs.csi.aws.com' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+7m23s       Normal    Provisioning                      persistentvolumeclaim/data-vault-0           External provisioner is provisioning volume for claim "vault/data-vault-0"
+7m20s       Normal    ProvisioningSucceeded             persistentvolumeclaim/data-vault-0           Successfully provisioned volume pvc-7e9e4327-60a4-4fd1-acbb-6c6dfe831bd6
+4m30s       Normal    FailedBinding                     persistentvolumeclaim/data-vault-1           no persistent volumes available for this claim and no storage class is set
+4m30s       Normal    FailedBinding                     persistentvolumeclaim/data-vault-2           no persistent volumes available for this claim and no storage class is set
+19m         Warning   FailedScheduling                  pod/vault-0                                  0/3 nodes are available: pod has unbound immediate PersistentVolumeClaims. preemption: 0/3 nodes are available: 3 Preemption is not helpful for scheduling.
+16m         Warning   FailedScheduling                  pod/vault-0                                  skip schedule deleting pod: vault/vault-0
+11m         Warning   FailedScheduling                  pod/vault-0                                  0/3 nodes are available: pod has unbound immediate PersistentVolumeClaims. preemption: 0/3 nodes are available: 3 Preemption is not helpful for scheduling.
+7m20s       Normal    Scheduled                         pod/vault-0                                  Successfully assigned vault/vault-0 to ip-172-31-11-176.ec2.internal
+7m16s       Normal    SuccessfulAttachVolume            pod/vault-0                                  AttachVolume.Attach succeeded for volume "pvc-7e9e4327-60a4-4fd1-acbb-6c6dfe831bd6"
+7m14s       Normal    Pulling                           pod/vault-0                                  Pulling image "hashicorp/vault:1.18.1"
+7m6s        Normal    Pulled                            pod/vault-0                                  Successfully pulled image "hashicorp/vault:1.18.1" in 7.755s (7.755s including waiting). Image size: 165384201 bytes.
+7m6s        Normal    Created                           pod/vault-0                                  Created container vault
+7m6s        Normal    Started                           pod/vault-0                                  Started container vault
+2m14s       Warning   Unhealthy                         pod/vault-0                                  Readiness probe failed: Key                Value...
+19m         Warning   FailedScheduling                  pod/vault-1                                  0/3 nodes are available: pod has unbound immediate PersistentVolumeClaims. preemption: 0/3 nodes are available: 3 Preemption is not helpful for scheduling.
+16m         Warning   FailedScheduling                  pod/vault-1                                  skip schedule deleting pod: vault/vault-1
+3m46s       Warning   FailedScheduling                  pod/vault-1                                  0/3 nodes are available: pod has unbound immediate PersistentVolumeClaims. preemption: 0/3 nodes are available: 3 Preemption is not helpful for scheduling.
+19m         Warning   FailedScheduling                  pod/vault-2                                  0/3 nodes are available: pod has unbound immediate PersistentVolumeClaims. preemption: 0/3 nodes are available: 3 Preemption is not helpful for scheduling.
+16m         Warning   FailedScheduling                  pod/vault-2                                  skip schedule deleting pod: vault/vault-2
+3m46s       Warning   FailedScheduling                  pod/vault-2                                  0/3 nodes are available: pod has unbound immediate PersistentVolumeClaims. preemption: 0/3 nodes are available: 3 Preemption is not helpful for scheduling.
+29m         Normal    Scheduled                         pod/vault-agent-injector-75f9d67594-g829p    Successfully assigned vault/vault-agent-injector-75f9d67594-g829p to ip-172-31-11-176.ec2.internal
+29m         Normal    Pulling                           pod/vault-agent-injector-75f9d67594-g829p    Pulling image "hashicorp/vault-k8s:1.5.0"
+29m         Normal    Pulled                            pod/vault-agent-injector-75f9d67594-g829p    Successfully pulled image "hashicorp/vault-k8s:1.5.0" in 1.942s (1.942s including waiting). Image size: 38284522 bytes.
+29m         Normal    Created                           pod/vault-agent-injector-75f9d67594-g829p    Created container sidecar-injector
+29m         Normal    Started                           pod/vault-agent-injector-75f9d67594-g829p    Started container sidecar-injector
+16m         Normal    Killing                           pod/vault-agent-injector-75f9d67594-g829p    Stopping container sidecar-injector
+16m         Normal    Scheduled                         pod/vault-agent-injector-75f9d67594-svc8n    Successfully assigned vault/vault-agent-injector-75f9d67594-svc8n to ip-172-31-21-194.ec2.internal
+16m         Normal    Pulling                           pod/vault-agent-injector-75f9d67594-svc8n    Pulling image "hashicorp/vault-k8s:1.5.0"
+16m         Normal    Pulled                            pod/vault-agent-injector-75f9d67594-svc8n    Successfully pulled image "hashicorp/vault-k8s:1.5.0" in 1.809s (1.809s including waiting). Image size: 38284522 bytes.
+16m         Normal    Created                           pod/vault-agent-injector-75f9d67594-svc8n    Created container sidecar-injector
+16m         Normal    Started                           pod/vault-agent-injector-75f9d67594-svc8n    Started container sidecar-injector
+29m         Normal    SuccessfulCreate                  replicaset/vault-agent-injector-75f9d67594   Created pod: vault-agent-injector-75f9d67594-g829p
+16m         Normal    SuccessfulCreate                  replicaset/vault-agent-injector-75f9d67594   Created pod: vault-agent-injector-75f9d67594-svc8n
+29m         Normal    ScalingReplicaSet                 deployment/vault-agent-injector              Scaled up replica set vault-agent-injector-75f9d67594 to 1
+16m         Normal    ScalingReplicaSet                 deployment/vault-agent-injector              Scaled up replica set vault-agent-injector-75f9d67594 to 1
+16m         Normal    NoPods                            poddisruptionbudget/vault                    No matching pods found
+29m         Normal    SuccessfulCreate                  statefulset/vault                            create Claim data-vault-0 Pod vault-0 in StatefulSet vault success
+29m         Normal    SuccessfulCreate                  statefulset/vault                            create Pod vault-0 in StatefulSet vault successful
+29m         Normal    SuccessfulCreate                  statefulset/vault                            create Claim data-vault-2 Pod vault-2 in StatefulSet vault success
+29m         Normal    SuccessfulCreate                  statefulset/vault                            create Claim data-vault-1 Pod vault-1 in StatefulSet vault success
+29m         Normal    SuccessfulCreate                  statefulset/vault                            create Pod vault-2 in StatefulSet vault successful
+29m         Normal    SuccessfulCreate                  statefulset/vault                            create Pod vault-1 in StatefulSet vault successful
+16m         Warning   CalculateExpectedPodCountFailed   poddisruptionbudget/vault                    Failed to calculate the number of expected pods: found no controllers for pod "vault-0"
+16m         Normal    NoPods                            poddisruptionbudget/vault                    No matching pods found
+16m         Normal    SuccessfulCreate                  statefulset/vault                            create Pod vault-0 in StatefulSet vault successful
+16m         Normal    SuccessfulCreate                  statefulset/vault                            create Pod vault-2 in StatefulSet vault successful
+16m         Normal    SuccessfulCreate                  statefulset/vault                            create Pod vault-1 in StatefulSet vault successful
+
+Type    Reason                 Age                 From                                                                                      Message
+  ----    ------                 ----                ----                                                                                      -------
+  Normal  FailedBinding          52m (x62 over 68m)  persistentvolume-controller                                                               no persistent volumes available for this claim and no storage class is set
+  Normal  ExternalProvisioning   47m (x7 over 49m)   persistentvolume-controller                                                               Waiting for a volume to be created either by the external provisioner 'ebs.csi.aws.com' or manually by the system administrator. If volume creation is delayed, please verify that the provisioner is running and correctly registered.
+  Normal  Provisioning           45m                 ebs.csi.aws.com_ebs-csi-controller-6cd4bccd45-g6dln_c94dc3f7-4ec6-4045-b78d-f2d672364138  External provisioner is provisioning volume for claim "vault/data-vault-0"
+  Normal  ProvisioningSucceeded  45m                 ebs.csi.aws.com_ebs-csi-controller-6cd4bccd45-g6dln_c94dc3f7-4ec6-4045-b78d-f2d672364138  Successfully provisioned volume pvc-7e9e4327-60a4-4fd1-acbb-6c6dfe831bd6
